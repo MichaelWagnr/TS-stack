@@ -18,3 +18,10 @@ app.module.ts
 
 Angular specific syntax:
 Code is written in TS tempates are written Angular template syntax.
+
+=======================================
+Section 2: Understanding Angular Template Syntax
+=======================================
+
+We use the angular CLI to generate an angular app:
+ng new project
