@@ -67,3 +67,17 @@ NPM install a css library and add an import statement into the styles.css file i
 ```css
 @import 'bulma/css/bulma.css';
 ```
+
+////Structural Directives
+
+A lot like conditional rendering in React
+
+There are 3 different kinds of directives, two we'll look at are
+
+Structural Directives Adds or removes HTML elements
+
+Attribute Directives Changes the properties of the HTML element it gets applied to
+
+EX '\*ngIf'
+
+How to deploy an app using now.sh
