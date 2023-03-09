@@ -55,3 +55,15 @@ Instead of using the value we could jsut as easily call a method that would eval
 {{ }}
 
 You can have parameters of the component object inbetween the double curly braces or evaluate code, call methods. Again without the need of using the THIS keyword.
+
+When we refer to the event object in Angular template syntax we need to use
+
+'$event' DOLLAR SIGN EVENT
+
+Adding third party CSS
+
+NPM install a css library and add an import statement into the styles.css file in the src folder
+
+```css
+@import 'bulma/css/bulma.css';
+```
