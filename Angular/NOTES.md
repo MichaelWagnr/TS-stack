@@ -186,5 +186,56 @@ Host element selector is
 :host
 
 =======================================
-Section 4: Building a Typing Game
+Section 5: Pipes
 =======================================
+
+angular.io/api?type=pipe
+
+Functions that format data for use in a template
+Only used in a template
+Some pipes are built into Angular
+We can build our own pipes very easily
+Like many other angular features, you don't have to use pipes, but they are recommended
+
+      {{ height | number : "1.1-3" }}
+
+The 1-3 to the right of the decimal is saying,
+
+give me atleast 1 decimal place and at most 3 decimal places.
+
+////JSON pipe is really useful for debugging.
+
+it prints json instead of [object, object]
+
+////Creating custom pipes
+
+we use the angular CLI to generate pipes with:
+
+```
+ng generate pipe NAME
+```
+
+Miles to Kilometers pipe example
+
+```ts
+@Pipe({
+	name: 'convert',
+})
+export class ConvertPipe implements PipeTransform {
+	transform(value: any, ...args: unknown[]): unknown {
+		if (!value) {
+			return ''
+		}
+
+		return value * 1.609
+	}
+}
+```
+
+Two interesting things with pipes
+
+Pipes can be used in more places than just the {{}} it can be used in directives however there is a chance that you'll need to wrap it in parens
+
+We can chain pipes!
+
+{{ miles | convert: 'cm' | number: '1.0-2' }}
