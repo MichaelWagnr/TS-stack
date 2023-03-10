@@ -184,3 +184,7 @@ We can't us app-root selector inside the scoped file
 
 Host element selector is
 :host
+
+=======================================
+Section 4: Building a Typing Game
+=======================================
