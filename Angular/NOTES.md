@@ -239,3 +239,101 @@ Pipes can be used in more places than just the {{}} it can be used in directives
 We can chain pipes!
 
 {{ miles | convert: 'cm' | number: '1.0-2' }}
+
+=======================================
+Section 6: Directives in Angular
+=======================================
+
+Directives can be used to modify the structure or properties of HTML elements.
+
+Used only in a template
+
+Some built into Angular
+
+We can build them on our own too!
+
+We can only apply one ng structural directive to one element
+
+<ng-container> is like a react fragment wherein we can wrap something that has a structural directive in an ng container and put aditional structural directives on to the ng-container
+
+////NG switch
+
+```html
+<div [ngSwitch]="currentPage">
+	<div *ngSwitchCase="0">Current Page is zero</div>
+	<div *ngSwitchCase="3">Current Page is 3</div>
+	<div *ngSwitchDefault>Unknown Current Page</div>
+</div>
+```
+
+If you have multiple matching statements they will all be displayed
+
+////Generating Custom Directives
+
+We again use the angular CLI
+
+`ng generate directive NAME`
+
+```ts
+import { Directive, ElementRef } from '@angular/core'
+
+@Directive({
+	selector: '[appClass]',
+})
+export class ClassDirective {
+	constructor(private element: ElementRef) {
+		this.element.nativeElement.style.backgroundColor = 'orange'
+	}
+}
+```
+
+This is very similar to React's useRef hook. I believe that the decorator @Directive has access to the element's type 'ElementRef' and is doing some magic behind the scenes.
+
+Similarly to react having elementRef.current we need to use element.nativeElement when dealing with a ref
+
+We can then use the name in the 'selector' of the decorator without \*
+
+////Intercepting a property assignment
+
+```ts
+class Car {
+	set color(newColor: string) {}
+}
+
+const car = new Car()
+car.color = 'blue'
+```
+
+```ts
+import { Directive, ElementRef, Input } from '@angular/core'
+
+@Directive({
+	selector: '[appClass]',
+})
+export class ClassDirective {
+	constructor(private element: ElementRef) {}
+
+	@Input() set backgroundColor(color: string) {
+		this.element.nativeElement.style.backgroundColor = color
+	}
+}
+```
+
+////Input Aliasing
+
+We want to be able to use the directive name as a property directive without having to 'call' it first like
+<element customDirective [property]="argument">
+
+We can accomplish this two ways;
+
+We can name the property the same name as the the custom directive.
+
+Or we can pass the directive name as an argument into the decorator that precedes the property
+
+```ts
+  @Input('appClass') set backgroundColor(color: string) {
+    this.element.nativeElement.style.backgroundColor = color;
+  }
+```
+
+The later makes more sense in order to maintain a naming convention that is explanatory
