@@ -449,3 +449,7 @@ const routes: Routes = [{ path: 'elements', component: ElementsHomeComponent }]
 export class ElementsRoutingModule {}
 ;``
 ```
+
+////Navigating with RouterLink
+
+we use the attribute routerLink in place of HREF in an anchor tag.
