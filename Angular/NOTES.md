@@ -337,3 +337,68 @@ Or we can pass the directive name as an argument into the decorator that precede
 ```
 
 The later makes more sense in order to maintain a naming convention that is explanatory
+
+=======================================
+Section 7: The Module System
+=======================================
+
+Module system inside of Angular is an optional way of organizing our components.
+
+5 types of modules:
+
+Domain - wraps up all the components needed to implement on single feature
+
+Routed - Same as a Domain module, but these components are tied to routes only displayed when the suer is at some particular address
+
+Routing - Defines routing rules
+
+Service - Defines services that will be used in multiple parts of the app
+
+Widget - Defines some reusable components that will be used in multiple other modules.
+
+////Generating Modules
+
+we can again use the ng CLI
+ng generate module MODULE_NAME --routing
+ng g m MODULE_NAME --routing
+
+'Routing' flag tells Angular to make this module ready for navigation
+
+The routing.module.ts defines routing rules
+
+////Importing and Exporting Modules
+
+Generating a component with CLI in a module
+
+ng g component MODULE/NAME
+
+Step 1 EXPORT
+
+Go into the Module file and add the component into the exports array of the NgModule Decorator
+
+```ts
+@NgModule({
+	declarations: [ElementsHomeComponent],
+	imports: [CommonModule, ElementsRoutingModule],
+	exports: [ElementsHomeComponent], // ADD EXPORT
+})
+export class ElementsModule {}
+```
+
+Step 2 IMPORT
+
+Import using ESModule import statement the Module file wherein we added the component into the config array.
+
+Add the MODULE into the imports of the module you want to have access to said module and it's components by proxy.
+
+```ts
+import { ElementsModule } from './elements/elements.module'
+
+@NgModule({
+	declarations: [AppComponent],
+	imports: [BrowserModule, AppRoutingModule, ElementsModule],
+	providers: [],
+	bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
