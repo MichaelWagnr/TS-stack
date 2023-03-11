@@ -414,3 +414,38 @@ exports - List of components, pipes, directives that this module makes available
 providers - Old way of connecting modules and services
 
 bootstrap - Used by the AppModule only to declare what component will be displayed first
+
+=======================================
+Section 8: Routing and Navigation
+=======================================
+
+When routing, we no longer need to export the component because whether or not it is visible will be handled by the routing component file instead of hardcoding it as a component element in a parents html template file.
+
+Adding an route is accomplished in two steps
+
+step 1: importing the Component into the routing file
+step 2: adding an object to the routes array
+
+```ts
+	{
+		path: 'elements',
+		component: ElementsHomeComponent
+	}
+```
+
+Routing file:
+
+```ts
+import { NgModule } from '@angular/core'
+import { RouterModule, Routes } from '@angular/router'
+import { ElementsHomeComponent } from './elements-home/elements-home.component'
+
+const routes: Routes = [{ path: 'elements', component: ElementsHomeComponent }]
+
+@NgModule({
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
+})
+export class ElementsRoutingModule {}
+;``
+```
