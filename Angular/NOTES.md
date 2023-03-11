@@ -453,3 +453,31 @@ export class ElementsRoutingModule {}
 ////Navigating with RouterLink
 
 we use the attribute routerLink in place of HREF in an anchor tag.
+
+=======================================
+Section 9: Lazy Loading with Modules
+=======================================
+
+With eager loading the Angular Development Server sends all of the modules when we hit the home route.
+
+Implenting Lazy loading in 4 steps:
+
+Choose which modules should be lazy loaded
+
+For each of those modules, remove any import statmenet for those modules from anywhere else in your project
+
+In the AppRoutingModule, define a Route in the 'routes' array to specify when to load up that module
+
+```ts
+const routes: Routes = [
+	{
+		path: 'elements',
+		loadChildren: () =>
+			import('./elements/elements.module').then((m) => m.ElementsModule),
+	},
+	{ path: '', component: HomeComponent },
+	{ path: '**', component: NotFoundComponent },
+]
+```
+
+In your lazy loaded module's Routing file, edit the 'path' of each route to be relative to the path you specifed in the 'AppRoutingModule'
