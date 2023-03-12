@@ -527,3 +527,15 @@ div.ui.icon.header:empty {
 	display: none;
 }
 ```
+
+////Handling exact routes
+
+```html
+<a
+	class="item"
+	[routerLink]="['./']"
+	routerLinkActive="active"
+	[routerLinkActiveOptions]="{ exact: true }"
+	>Biography</a
+>
+```
