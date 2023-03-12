@@ -497,3 +497,33 @@ ngContent is pretty similar to React children
 
 <h1>{ React.Children }</h1>
 ```
+
+We can use multiple elements with ng-content using the select attribute
+
+```html
+<div class="ui placeholder segment">
+	<div class="ui icon header">
+		<ng-content select="header"></ng-content>
+	</div>
+	<ng-content></ng-content>
+</div>
+
+<!-- used with: -->
+
+<app-segment>
+	<header>
+		<i class="pdf file outline icon"> </i>
+		No documents are listed for this customer
+	</header>
+
+	<button class="ui primary button">Add document</button>
+</app-segment>
+```
+
+How to deal with empty or commented out components to avoid margin
+
+```css
+div.ui.icon.header:empty {
+	display: none;
+}
+```
