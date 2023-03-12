@@ -481,3 +481,19 @@ const routes: Routes = [
 ```
 
 In your lazy loaded module's Routing file, edit the 'path' of each route to be relative to the path you specifed in the 'AppRoutingModule'
+
+////Widget modules
+
+Typically we make a generic module called the 'shared module' and keep out universal widget modules in that module.
+
+ngContent is pretty similar to React children
+
+```html
+<h1>
+	<ng-content></ng-content>
+</h1>
+
+<!-- same as  -->
+
+<h1>{ React.Children }</h1>
+```
