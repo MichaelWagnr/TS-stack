@@ -528,6 +528,10 @@ div.ui.icon.header:empty {
 }
 ```
 
+=======================================
+Section 10: Advanced Component Routing
+=======================================
+
 ////Handling exact routes
 
 ```html
@@ -539,3 +543,7 @@ div.ui.icon.header:empty {
 	>Biography</a
 >
 ```
+
+=======================================
+Section 11: Advanced Component Reusability + Hooks
+=======================================
