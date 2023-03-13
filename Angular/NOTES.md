@@ -621,3 +621,144 @@ valueWrapper<number>(10)
 ```
 
 In general we can lean on type inference when using generic functions
+
+=======================================
+Section 13: Handling Data and HTTP Req
+=======================================
+
+App goals:
+Figure out how to fetch data from an outside API
+learn more about communicating between components
+leverage TS to catch errors during development
+learn about Angular app security
+
+////Services
+To generate a service we use _drumroll_ Angular CLI
+
+```
+ng g service NAME
+```
+
+Name is seemingly lowercase
+
+https://en.wikipedia.org/w/api.php?
+action=query&
+format=json&
+list=search&
+utf8=1&
+srsearch=space
+
+Services
+Used to fetch/store/update any kind of data in our app
+Almost always where we are going to put network requests
+data flows from a service to a component
+services are implemented as classes
+Angular will automatically create a single instance of each service for us
+
+////Accessing Services
+
+```ts
+import { Component } from '@angular/core'
+import { WikipediaService } from './wikipedia.service'
+
+@Component({
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	constructor(private wikipedia: WikipediaService) {}
+
+	onTerm(term: string) {
+		const results = this.wikipedia.search(term)
+		console.log(results)
+	}
+}
+```
+
+We're saying 'wikipedia' will be added as a 'private' property atuomatically to the instance of the App component
+
+'wikipedia' will be of type 'Instance of WikipediaService'
+
+176 - 179 DEPENDENCY INJECTION
+
+Dependency Injection
+Components, services , and other things in Angular 'ask' for dependencies, rather than creating them directly
+Components need other things to work correctly. Our components could create an instance of those things themselves. Instead, we create them separately and pass them in to the constructor
+The 'automatic' nature of DI is not strictly required - we could do this all manually by hand
+The goal is to make testing easier
+Theoretically makes code reuse and code changes easier, but maybe not happen a lot.
+
+////Making HTTP requests inside angular
+
+```ts
+APP MODULE FILE ---------------------------------
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+IMPORT
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { SearchBarComponent } from './search-bar/search-bar.component';
+import { PageListComponent } from './page-list/page-list.component';
+
+ADD TO IMPORTS ARRAY AFTER BROWSER MODULE
+@NgModule({
+  declarations: [AppComponent, SearchBarComponent, PageListComponent],
+  imports: [BrowserModule, HttpClientModule],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {
+}
+
+SERVICE -----------------------------------------
+
+import { Injectable } from '@angular/core';
+IMPORT
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class WikipediaService {
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  constructor(private http: HttpClient) {}
+
+    search(term: string) {
+    return this.http.get('https://en.wikipedia.org/w/api.php?', {
+      params: {
+        action: 'query',
+        format: 'json',
+        list: 'search',
+        utf8: '1',
+        srsearch: term,
+        origin: '*',
+      },
+    });
+  }
+}
+
+COMPONENT THAT CONSUMES SERVICE -----------------
+
+import { Component } from '@angular/core';
+import { WikipediaService } from './wikipedia.service';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  constructor(private wikipedia: WikipediaService) {}
+
+  onTerm(term: string) {
+    this.wikipedia.search(term).subscribe((response) => {
+      console.log(response);
+    });
+  }
+}
+
+```
