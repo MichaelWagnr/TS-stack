@@ -762,3 +762,15 @@ export class AppComponent {
 }
 
 ```
+
+=======================================
+Section 14: App Security in Angular
+=======================================
+
+Angular can automatically escape HTML for us.
+
+```html
+<td [innerHTML]="page.snippet"></td>
+```
+
+Angular can also purify HTML for us when we intentionally put it as a [] attribute
