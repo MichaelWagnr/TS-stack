@@ -547,3 +547,35 @@ Section 10: Advanced Component Routing
 =======================================
 Section 11: Advanced Component Reusability + Hooks
 =======================================
+
+LifeCycle Hooks
+
+ngOnInit -> onMount
+ngOnDestroy -> onUnMount
+ngOnChanges -> onChange
+
+////Handling events from child to parent.
+
+```ts
+CHILD ---------
+
+import { Component, ElementRef, Output, EventEmitter } from '@angular/core';
+
+@Component({
+	...
+})
+export class ModalComponent {
+  @Output() close = new EventEmitter();
+
+  onCloseClick() {
+    this.close.emit();
+  }
+}
+
+PARENT --------
+
+<app-modal (close)="onClick()" *ngIf="modalOpen"></app-modal>
+```
+
+We use the Output decorator and a property that points to a new instance of EventEmitter
+The name of the property can be anything. It's similar in nature to a refElement, where we can name the ref something specific but have it point to an element. We name an EventEmitter something specific and reference it on the parent element.
