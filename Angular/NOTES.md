@@ -774,3 +774,116 @@ Angular can automatically escape HTML for us.
 ```
 
 Angular can also purify HTML for us when we intentionally put it as a [] attribute
+
+=======================================
+Section 15: RxJs From the Fundamentals
+=======================================
+
+rxjs - Functional reactive programming library
+
+Separate library from Angular
+Used extensively by Angular for managing data
+We use this instead of promises or async/await for handling async stuff
+Not strictly required! We can use promises and async/await
+
+RxJs makes building some kinds of features really really easy compared to writing normal code
+
+Hard. Probably the hardest thing in the world of JS, period.
+If you can get a good grasp of RXJS, all of angular is at your fingertips.
+
+OBSERVABLE emmits events that go through a PIPE that consists of various OPERATORS that process the value. If we encounter an error we exit early and otherwise we proceed, this last step is referred to as the OBSERVER.
+
+////Creating an observable
+
+out.stegrider.now.sh
+Tool to play around with and visualize RxJs
+
+```js
+const { fromEvent } = Rx
+
+const input = document.createElement('input')
+const container = document.querySelector('.container')
+
+container.appendChild(input)
+
+const observable = fromEvent(input, 'input')
+
+// This line is only necessary in the REPL
+observable
+```
+
+observable is sort of like an event listener
+
+////Operators
+
+Functions that do some specific processing on the incoming value
+We chain together operators to build up a processing pipeline
+75% of RxJs dis memorizing the different operators
+There are some very generic operators and some very specific ones
+For any given problem, you will probably decide to use on operator, then later realize you could have more easily used another
+Almost all documentation around operators is awful
+Recommendation: take a look at exactly what value is coming out of your observable, then figure out what operators you need to implement you app.
+
+////Adding an Observer
+
+```js
+observable.subscribe({
+	next(value) {
+		console.log(`Your value is ${value}`)
+	},
+	error(err) {
+		console.error('Oops', err.message)
+	},
+})
+```
+
+Major Operator Groups
+
+Transform - Take in a value, do some processing, return a new value
+Filtering - Modifies the flow of events in a pipe (group them together, pause them, delete them)
+Creation - Creates a new observable
+
+////Low Level Observables
+
+```js
+const { Observable } = Rx
+
+const observable = new Observable((subscriber) => {
+	// Throw the value 1 into our pipeline
+	subscriber.next(1)
+
+	// Marks this observable as complete, no more values will come out
+	subscriber.complete()
+
+	// Emit an error, no more values will come out
+	subscriber.error(new Error('Error'))
+}).pipe()
+
+observable.subscribe({
+	next(value) {
+		console.log('Got a value', value)
+	},
+	complete() {
+		console.log('Observable is complete. Dont expect any more values')
+	},
+	error(err) {
+		console.log('Oops, ', err.message)
+	},
+})
+
+// ONLY HERE because this tool requires it
+observable
+```
+
+////Alternative Observer Syntax
+
+```js
+observable.subscribe(
+	(value) => console.log('Next value:', value),
+	(err) => console.error('BAD THING!!!', err.message),
+	() => console.log('COMPLETE!')
+)
+```
+
+Hot vs Cold
+Multicast vs Unicast
