@@ -579,3 +579,45 @@ PARENT --------
 
 We use the Output decorator and a property that points to a new instance of EventEmitter
 The name of the property can be anything. It's similar in nature to a refElement, where we can name the ref something specific but have it point to an element. We name an EventEmitter something specific and reference it on the parent element.
+
+=======================================
+Section 12: A TypeScript Overview
+=======================================
+
+When using the Propert Assignment Shortcut where we declare public and private variables in the constructor we don't have to assign them in the body of the constructor function.
+
+public/private are modifiers
+get/set are accessors
+
+part 161. Decorators!
+
+Plain functions
+Called when the file first gets executed, not when an instance of the class is created
+Can be applied to a class, a property, a method, an accessor, or an argument of a method
+Receives different arguments depending on where it gets used
+Can be a plain decorator or a decorator factory
+Used to mess around with the internals of the class in clever ways
+
+The difference between a Decorator and Decorator factory is a Decorator Factory has parens and has to return another function
+
+Class Generic example:
+
+```ts
+class ValueHolder<TypeForValueProperty> {
+	value: TypeForValueProperty
+}
+
+const numberHolder = new ValueHolder<number>()
+```
+
+Function Generic example:
+
+```ts
+const valueWrapper = <T>(value: T): T[] => {
+	return [value]
+}
+
+valueWrapper<number>(10)
+```
+
+In general we can lean on type inference when using generic functions
