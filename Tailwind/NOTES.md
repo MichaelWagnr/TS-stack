@@ -42,3 +42,63 @@ m0.5 = 2px
 m1 = 4px
 
 If you want a custom font you can use a tailwind.config.js
+
+=======================================
+Section 4: A Better Dev Environment
+=======================================
+
+////Directives and functions
+
+In our input.css file we can declare class combinations or custom values. To leverage existing tailwind classes we start with the @apply directive
+
+```css
+INPUT CSS FILE ----------------------------------
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	h1 {
+		@apply text-3xl;
+	}
+
+	h2 {
+		@apply text-xl;
+	}
+}
+
+@layer components {
+	.btn-blue {
+		@apply bg-blue-500 text-white py-2 px-4 rounded-xl font-bold hover:bg-blue-700;
+	}
+}
+
+.content-area {
+	@apply bg-green-200;
+	height: theme('spacing.128');
+}
+
+@media screen(xl) {
+	body {
+		@apply bg-black text-white;
+	}
+}
+
+TAILWIND CONFIG FILE ----------------------------
+
+module.exports = {
+	content: ['./*.html'],
+	theme: {
+		extend: {
+			spacing: {
+				128: '32rem',
+			},
+		},
+	},
+	plugins: [],
+}
+
+```
+
+We can make custom themes in our tailwind config file and reference them elsewhere

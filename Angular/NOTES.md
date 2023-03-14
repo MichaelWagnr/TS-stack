@@ -887,3 +887,9 @@ observable.subscribe(
 
 Hot vs Cold
 Multicast vs Unicast
+
+=======================================
+Section 16: Bonus - TS + RxJs
+=======================================
+
+When we make a get request using the build in HttpClient in Angular it returns an observable.
