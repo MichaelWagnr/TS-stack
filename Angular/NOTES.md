@@ -893,3 +893,52 @@ Section 16: Bonus - TS + RxJs
 =======================================
 
 When we make a get request using the build in HttpClient in Angular it returns an observable.
+
+Example of using a pipe appended to the end of an http request which is afterall returning an observable.
+
+We can also pass a custom interface into the http request so that TS can intelligently assess what is coming as a response and how the operators are effecting it.
+
+It will also catch errors anywhere where a component is consuming/subscribing to this observable.
+
+Presumably we could have a service that makes http requests and consume them via dependency injection in multiple components. Mimicking http requests made in Context in React.
+
+```ts
+import { Injectable } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { map } from 'rxjs/operators'
+
+interface WikipediaResponse {
+	query: {
+		search: {
+			title: string
+			snippet: string
+			pageid: number
+		}[]
+	}
+}
+@Injectable({
+	providedIn: 'root',
+})
+export class WikipediaService {
+	constructor(private http: HttpClient) {}
+
+	search(term: string) {
+		return this.http
+			.get<WikipediaResponse>('https://en.wikipedia.org/w/api.php?', {
+				params: {
+					action: 'query',
+					format: 'json',
+					list: 'search',
+					utf8: '1',
+					srsearch: term,
+					origin: '*',
+				},
+			})
+			.pipe(map((res) => res.query.search))
+	}
+}
+```
+
+=======================================
+Section 17: A Photo-Fetching App
+=======================================
