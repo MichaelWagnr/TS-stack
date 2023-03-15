@@ -940,5 +940,127 @@ export class WikipediaService {
 ```
 
 =======================================
-Section 17: A Photo-Fetching App
+Section 18: Credit Card Payments with Reactive Forms
 =======================================
+
+Two ways of making forms in Angular:
+
+Reactive Forms - a little more common
+
+Most of the form logic is driven by configuration in a component calss file
+More appropriate for complex forms
+Exposes some aspects of the form to us as RxJs Observalbes
+We have to wrie up the 'ReactiveFormsModule' to our App Module to use them!
+
+Template Forms
+
+Most of the form logic is driven by config in our component template file
+More appropriate for simple forms
+Harder to deal with dynamic forms (adding/removing form elements)
+We have to wire up the 'FormsMOdule' to our App Module to use them!
+
+Step 1: we need to import the module and import it into our App module
+
+```ts
+import { NgModule } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
+import { ReactiveFormsModule } from '@angular/forms'
+
+import { AppComponent } from './app.component'
+
+@NgModule({
+	declarations: [AppComponent],
+	imports: [BrowserModule, ReactiveFormsModule],
+	providers: [],
+	bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+Form component
+
+```ts
+COMPONENT ---------------------------------------
+import { Component } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-card-form',
+  templateUrl: './card-form.component.html',
+  styleUrls: ['./card-form.component.css'],
+})
+export class CardFormComponent {
+  cardForm = new FormGroup({
+    name: new FormControl(''),
+  });
+}
+
+TEMPLATE ----------------------------------------
+<form [formGroup]="cardForm">
+  <input formControlName="name" />
+</form>
+
+//For debugging purposes
+<div>Form Contents: {{ cardForm.value | json }}</div>
+<div>Form is valid: {{ cardForm.valid }}</div>
+```
+
+Validation
+
+We import Validators into our class component and add an array as a second argument to FormControl:
+
+````ts
+ cardForm = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+  });
+	```
+
+	We can click on Validators to go to the type declaration file and see all of the different validators available.
+````
+
+valid - Angular has validated whatever the user entered successfully
+invalid - The value in th einput is invalid
+pending - Validation is currently running on this field
+disabled - Ignore user input on this field and don't validate it
+touched - User clicked into then out of a field
+untouched - User hasn't clicked into then out of this field
+pristine - User hasn't clicked on this field at all
+dirty - User has changed the value of this field
+
+=======================================
+Section 19: Simple Data Entry with Template Forms
+=======================================
+
+Again like Reactive Forms, we need to import and include the FormModule into the App module component
+
+A lot of logic will be in the component template file
+
+```ts
+COMPONENT ---------------------------------------
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  email: string;
+}
+
+TEMPLATE ----------------------------------------
+<form #emailForm="ngForm">
+  <input name="email" [(ngModel)]="email" />
+
+  {{ emailForm.valid }}
+  {{ email }}
+</form>
+
+<div>Is form valid: {{ emailForm.valid }}</div>
+<div>Form values: {{ emailForm.value | json }}</div>
+
+```
+
+////Two way binding syntax
+
+When we write out [(ngMOdel)] it's as though we were using (input) and [value] at the same time, it creates a two way bind between our component and the user. Similar in fashion to having a controlled input in React.
