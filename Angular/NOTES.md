@@ -1027,6 +1027,29 @@ untouched - User hasn't clicked into then out of this field
 pristine - User hasn't clicked on this field at all
 dirty - User has changed the value of this field
 
+////Hijacking Form Control Values
+
+```ts
+import { FormControl } from '@angular/forms'
+
+export class DateFormControl extends FormControl {
+	setValue(value: string, options: any) {
+		console.log(value)
+		super.setValue(value, options)
+	}
+}
+```
+
+We import FormControl and create a class that extends it so that we can overwrite some of the functionality.
+
+Input masking is the act of taking the input of a user and modifying it.
+
+We can accomplish this with Libraries, albeit with some drawbacks.
+
+ngx-mask is a good example of a masking library.
+
+The data behind the scenes does not receive the same formatting as what is shown to the user when using a masking library.
+
 =======================================
 Section 19: Simple Data Entry with Template Forms
 =======================================
