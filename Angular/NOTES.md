@@ -1388,3 +1388,76 @@ solution: Leave the 'checkAuth' call in the App component
 =======================================
 Section 24: Build a Real Email Client!
 =======================================
+
+////Extracting Url Param
+
+```ts
+import { Component } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
+
+@Component({
+	selector: 'app-email-show',
+	templateUrl: './email-show.component.html',
+	styleUrls: ['./email-show.component.css'],
+})
+export class EmailShowComponent {
+	constructor(private route: ActivatedRoute) {}
+
+	ngOnInit() {
+		this.route.params.subscribe((snapshot) => {
+			console.log(snapshot)
+		})
+	}
+}
+```
+
+The params property of route which is an injected ActivatedROute is a BehaviorSubject that emits values any time the URL changes
+
+Observable vs. Snapshot
+
+```ts
+export class EmailShowComponent {
+	constructor(private route: ActivatedRoute) {}
+
+	ngOnInit() {
+		console.log(this.route.snapshot)
+	}
+}
+```
+
+An Observable is giving us information any time that a route changes. However if we want to just easily grab the information we can get it off of the snapshot. I wonder though, if this could create a problem where we have stale data once we navigate around.
+
+An even better way using switchMap
+
+```ts
+import { Component } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
+import { EmailService } from '../email.service'
+import { switchMap } from 'rxjs'
+
+@Component({
+	selector: 'app-email-show',
+	templateUrl: './email-show.component.html',
+	styleUrls: ['./email-show.component.css'],
+})
+export class EmailShowComponent {
+	constructor(
+		private route: ActivatedRoute,
+		private emailService: EmailService
+	) {}
+
+	ngOnInit() {
+		this.route.params
+			.pipe(
+				switchMap(({ id }) => {
+					return this.emailService.getEmail(id)
+				})
+			)
+			.subscribe((email) => {
+				console.log(email)
+			})
+	}
+}
+```
+
+////Resolvers
