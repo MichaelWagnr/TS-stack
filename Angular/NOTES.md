@@ -1214,3 +1214,173 @@ username: new FormControl(
 ```
 
 We place asynchronous validators in an array as the the 3rd argument to our formcontrol. Angular will prioritize synchronous validators over asynchronous validators. So the async validator won't run until the others have passed.
+
+=======================================
+Section 22: Handling Authentication
+=======================================
+
+Requirements of the SignIn Observable
+
+We must be able to get it to emit a new value 'from the outside'
+We must be able to give it a default, or starting, value
+New subscribers must be given the value from it immediately after subscribing
+
+We want to implement a tool named BehaviorSubject
+
+Naming convention for observables: adding a $-sign to the end of the variable name.
+
+```ts
+import { Component } from '@angular/core'
+import { BehaviorSubject } from 'rxjs'
+import { AuthService } from './auth/auth.service'
+
+@Component({
+	selector: 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+	// signedin = false;
+	signedin$: BehaviorSubject<boolean>
+
+	constructor(private authService: AuthService) {
+		this.signedin$ = this.authService.signedin$
+	}
+
+	// ngOnInit() {
+	//   this.authService.signedin$.subscribe((signedin) => {
+	//     this.signedin = signedin;
+	//   });
+	// }
+}
+```
+
+Two different ways of consuming a behavior subject. Commented out version vs referencing the Observable directly. There may be a preference to have the commented out version because then we do not need to pass our value through an async pipe in our template file.
+
+The default behavior to the HttpClient is to discard any cookies.
+
+````ts
+  checkAuth() {
+    return this.http
+      .get(this.rootUrl + '/auth/signedin', { withCredentials: true })
+      .pipe(tap((response) => console.log(response)));
+  }
+	```
+
+	The way we can work around this is by passing an options object as another argument with withCredentials: true
+
+````
+
+////HTTP Interceptors
+
+Works very similarly to express middleware function.
+
+```ts
+import { Injectable } from '@angular/core'
+import {
+	HttpEvent,
+	HttpInterceptor,
+	HttpHandler,
+	HttpRequest,
+	HttpEventType,
+} from '@angular/common/http'
+import { Observable, tap } from 'rxjs'
+
+@Injectable()
+export class AuthHttpInterceptor implements HttpInterceptor {
+	intercept(
+		req: HttpRequest<any>,
+		next: HttpHandler
+	): Observable<HttpEvent<any>> {
+		// Modify or log the outgoing request
+		const modifiedReq = req.clone({
+			withCredentials: true,
+		})
+		return next.handle(modifiedReq)
+		// .pipe(
+		//   tap((val) => {
+		//     if (val.type === HttpEventType.Sent) {
+		//       console.log('Request was sent to server');
+		//     }
+
+		//     if (val.type === HttpEventType.Response) {
+		//       console.log('Got a response from the API', val);
+		//     }
+		//   })
+		// );
+	}
+}
+```
+
+The nicety is that if we write out the class and implements HttpInterceptor the body of the class will be autocompleted.
+
+////Programatic Navigation
+
+```ts
+import { Component } from '@angular/core'
+import { AuthService } from '../auth.service'
+import { Router } from '@angular/router'
+
+@Component({
+	selector: 'app-signout',
+	templateUrl: './signout.component.html',
+	styleUrls: ['./signout.component.css'],
+})
+export class SignoutComponent {
+	constructor(private authService: AuthService, private router: Router) {}
+
+	ngOnInit() {
+		this.authService.signout().subscribe(() => {
+			this.router.navigateByUrl('/')
+		})
+	}
+}
+```
+
+Basically we just import Router and inject it into our class and then call this.router.navigateByUrl('ENDPOINT')
+
+=======================================
+Section 23: More on Angular App Security
+=======================================
+
+//// Restricted routing with guards
+
+3 types of guards
+
+canActivate - User can visit this route
+canActivateChild - User can visit this child route
+canLoad - User can load this lazily-loaded module and access the routes inside of it
+
+```ts
+import { NgModule } from '@angular/core'
+import { RouterModule, Routes } from '@angular/router'
+import { AuthGuard } from './auth/auth.guard'
+
+const routes: Routes = [
+	{
+		path: 'inbox',
+		canLoad: [AuthGuard],
+		loadChildren: () =>
+			import('./inbox/inbox.module').then((mod) => mod.InboxModule),
+	},
+]
+
+@NgModule({
+	imports: [RouterModule.forRoot(routes)],
+	exports: [RouterModule],
+})
+export class AppRoutingModule {}
+```
+
+Implementing guards in routes
+
+////Auth Guard Issues
+
+The signedin$ behavior subject never gets marked as complete
+solution: Use some RxJs trickery to mark the behavior subject as complete
+
+If the guard runs before our 'checkAuth' function is done, we will provide the default 'false' value, marking the user as not authenticated
+solution: Change the default value of the behavior subject to 'null'
+
+If we move the 'checkAuth' call to the guard, we risk not running the function at all if a user only loads another route
+solution: Leave the 'checkAuth' call in the App component
