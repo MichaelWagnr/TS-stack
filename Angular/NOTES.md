@@ -1087,3 +1087,130 @@ TEMPLATE ----------------------------------------
 ////Two way binding syntax
 
 When we write out [(ngMOdel)] it's as though we were using (input) and [value] at the same time, it creates a two way bind between our component and the user. Similar in fashion to having a controlled input in React.
+
+=======================================
+Section 21: Custom Validators
+=======================================
+
+When we create a validator that needs to make a request or take some time to validate we refer to it as an async validator vs. synchronous validators that can be validated instantly ex. checking the length of an inputted text vs. making a call to a server to see if a username is already in use.
+
+```ts
+import { Component } from '@angular/core'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
+
+@Component({
+	selector: 'app-signup',
+	templateUrl: './signup.component.html',
+	styleUrls: ['./signup.component.css'],
+})
+export class SignupComponent {
+	authForm = new FormGroup({
+		username: new FormControl('', [
+			Validators.required,
+			Validators.minLength(3),
+			Validators.maxLength(20),
+			Validators.pattern(/^[a-z0-9]+$/i),
+		]),
+		password: new FormControl('', [
+			Validators.required,
+			Validators.minLength(4),
+			Validators.maxLength(20),
+		]),
+		passwordConfirmation: new FormControl('', [
+			Validators.required,
+			Validators.minLength(4),
+			Validators.maxLength(20),
+		]),
+	})
+}
+```
+
+Another example of Reactive forms in Angular. Broken down into steps
+
+1 We import FormGroup, FormControl and Validators from @angular/forms
+
+2 We create a property on our component class that references the entire form
+
+3 We then instantiate a new FormGroup() and pass an object of all the inputs that will make up our form
+
+4 The Object is a key value pair where key is the name of the input and value is a new FormControl() where the arguments is the initial value, and an array of validators.
+Validators is an object with a number of static methods that will be used to validate an input
+
+```html
+<h3>Create an Account</h3>
+<form class="ui form" [formGroup]="authForm">
+	<div class="field">
+		<label>Username</label><input formControlName="username" />
+	</div>
+	{{ authForm.get("username")!.errors | json }}
+	<div class="field">
+		<label>Password</label><input formControlName="password" />
+	</div>
+	{{ authForm.get("password")!.errors | json }}
+	<div class="field">
+		<label>Password Confirmation</label
+		><input formControlName="passwordConfirmation" />
+	</div>
+	{{ authForm.get("passwordConfirmation")!.errors | json }}
+
+	<button class="ui submit button primary">Submit</button>
+</form>
+```
+
+5 In our component template html file we make reference to FormGroup and FormControls
+
+6 We create a form and use attribute binding to reference the FormGroup
+[formGroup]="NAME_OF_FORM_GROUP"
+
+7 We then reference each controlled input in our component with the attribute formControlName="FORM_CONTROL_NAME"
+
+////Custom Validator
+
+We will implement a validator that checks that password and passwordConfirmation match
+
+And a second that will check if a username already exists on the server
+
+The steps to making a Class-Based Custom Sync Validator
+
+Create a new class to implement your custom validator
+[Optional] Have the class implement the 'Validator' interface
+Add a 'validate' mehtod to the class, which will be called witha FormGroup of FormControl
+Validator method should return 'null' if everything is OK, or an object if something is wrong
+
+```ts
+import { FormGroup, Validator } from '@angular/forms'
+
+export class MatchPassword implements Validator {
+	validate(formGroup: FormGroup) {
+		// RETURN NULL IF OK
+		// RETURN {} IF THERE IS AN ERROR
+		// return { passwordsDontMatch: true };
+	}
+}
+```
+
+We can pass FormControl, FormGroup or AbstractControl into the validate method of our ucstom class validator. Depending on what we want to validate.
+
+We use implements Validator, to make sure that our custom validator matches what Angular expects out of a Validator, thanks TS.
+
+Class-based Custom Async Validator
+
+Create a new class to implement your custom validator
+Option, Have the class implement the 'AsyncValidator' interface
+Add a 'validate' method to the class, which will be called with a FormGroup or FormControl
+Validator method should return an Observable that will emit 'null' if everything is OK or an object if something is wrong.
+
+```ts
+username: new FormControl(
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(20),
+          Validators.pattern(/^[a-z0-9]+$/i),
+        ],
+        [this.uniqueUsername.validate as AsyncValidatorFn]
+      ),
+```
+
+We place asynchronous validators in an array as the the 3rd argument to our formcontrol. Angular will prioritize synchronous validators over asynchronous validators. So the async validator won't run until the others have passed.
