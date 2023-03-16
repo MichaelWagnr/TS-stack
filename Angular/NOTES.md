@@ -1384,3 +1384,7 @@ solution: Change the default value of the behavior subject to 'null'
 
 If we move the 'checkAuth' call to the guard, we risk not running the function at all if a user only loads another route
 solution: Leave the 'checkAuth' call in the App component
+
+=======================================
+Section 24: Build a Real Email Client!
+=======================================
