@@ -10,6 +10,7 @@ export class InputComponent {
   @Input() label: string;
   @Input() control: FormControl;
   @Input() inputType: string; // 'password'
+  @Input() controlType: 'input' | 'textarea'; // 'password'
 
   showErrors() {
     const { dirty, touched, errors } = this.control;
