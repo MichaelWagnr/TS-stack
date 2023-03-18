@@ -1522,3 +1522,76 @@ Inheritance/Abstract Classes
 Sets up a contract between different classes
 Use when we are trying to build up a definition of an object
 Strongly couples classes together
+
+=======================================
+Section 26: A Multi-Feature Landing Page
+=======================================
+
+Modules review:
+
+Organizes code in a project
+Contains a set of components, services, pipes and directives
+Some modules are built into Angular, others we create on our own
+Combining modules + services is a bit awkward. Major change was introduced in Angular v6
+Forces you to organize your code
+Can hav a huge impact on how quickly your app starts up
+
+The 'Weather' Feature
+
+This is a single feature of our app, so we should probably generate a module to contain all the code for it
+Probably need one component called 'forecast' or 'weather-list' or something to display to use
+Need to reach out to an API to fetch weather data, so probably need a service.
+
+another observable example:
+
+````ts
+IN SERVICE
+
+  getCurrentLocation() {
+    return new Observable<GeolocationCoordinates>((observer) => {
+      window.navigator.geolocation.getCurrentPosition(
+        (position) => {
+          observer.next(position.coords);
+          observer.complete();
+        },
+        (err) => observer.error(err)
+      );
+    });
+  }
+	```
+
+IN COMPONENT
+
+import { Component } from '@angular/core';
+import { ForecastService } from '../forecast.service';
+
+@Component({
+  selector: 'app-forecast',
+  templateUrl: './forecast.component.html',
+  styleUrls: ['./forecast.component.css'],
+})
+export class ForecastComponent {
+  constructor(private forecastService: ForecastService) {
+    forecastService.getCurrentLocation().subscribe((coords) => {
+      console.log(coords);
+    });
+  }
+}
+
+````
+
+////Subjects
+
+Notes on Subjects:
+Hot by default - it will emit values even if nobody is listening!
+The Subject is Multicast by default - multiple subscribers always get the same value
+
+HOWEVER
+
+Calling 'pipe' returns a new OBSERVABLE that is COLD and UNICAST
+
+Async Subject - Same as subjet, but also doesn't emit any values until it is marked as 'complete'. ONly last value is emitted
+
+Behavior Subject - Same as subject, but also takes an intial 'seed' value. New subscribers instantly get the most recent value
+
+Replay Subject - Same as subject, but also new subscribers instantly get sent all previously emitted values.
