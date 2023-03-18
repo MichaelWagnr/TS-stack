@@ -1460,4 +1460,65 @@ export class EmailShowComponent {
 }
 ```
 
-////Resolvers
+=======================================
+Section 25: Appendix - TypeScript
+=======================================
+
+Type Annotations + Type Inference
+
+If declaration and initialization are on the same line, TS will figure out the type for us.
+
+Where we rely on annotations:
+
+When we declare a variable on one line then intialize it later
+When wewant a variable to have a type that can't be inferred
+When a function returns the 'any' type and we need to clarify the value
+
+Void and Never
+
+Void is a function that doesn't return anything.
+
+Never is a function that doesn't complete because of a thrown Error, therefor never returning anything.
+
+2D Arrays ex.
+string[][]
+is an array of arrays of strings
+
+Flexible Arrays
+(string | boolean)[]
+we use parens to put in a union type
+
+Interfaces don't need to reflect all of the properties of a class or object. TS is checking to see if a class satisfies the requirements of an interface
+
+Classes can be used as a value or a type..
+
+Union types restrict access to what is common between the types which is why we use type guards to let TS know that we are dealing with one or the other.
+
+We use type of for number, string, symbol, boolean
+ex.
+typeof this.collection === 'string'
+
+We use instanceof + the constructor function of whatever we're checking
+
+ex.
+this.collection instanceof Array
+this.collection instanceof Date
+
+Abstract Classes
+Can't be used tocreate an object diectly
+Only used as a parent class
+Can contain real implementation for some methods
+The implemented methods can refer to othe rmethods that don't actually exis yet (we still have to provide names and types for the un-implemented methods)
+Can make child classes promise to implement some other method
+
+Interfaces vs Abstract Classes
+
+Interfaces
+Sets up a contract between different classes
+Use when we have very different objects that we want to work together
+Promotes loose coupling
+
+Inheritance/Abstract Classes
+Sets up a contract between different classes
+Use when we are trying to build up a definition of an object
+Strongly couples classes together
