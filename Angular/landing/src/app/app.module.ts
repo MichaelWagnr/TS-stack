@@ -5,6 +5,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 
 import { AppComponent } from './app.component';
 import { WeatherModule } from './weather/weather.module';
+import { NewsApiModule } from './news-api/news-api.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -13,6 +14,7 @@ import { WeatherModule } from './weather/weather.module';
     WeatherModule,
     HttpClientModule,
     NotificationsModule,
+    NewsApiModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
