@@ -181,3 +181,43 @@ Validation Pipe flow:
 Use class-transformer to turn the body of a request into an instance of the DTO class
 Use class-validator to validate the instance
 If there are validation errors, respond immediately, otherwise provide body to request handler
+
+=============================================
+Section 5: Nest Architecture: Services and Repositories
+=============================================
+
+One difficulty of Nest is understanding why services exist and how they differ from Repositories
+They frequently end up having very similar method names
+
+Services:
+Its a class
+#1 place to put any business logic
+Uses one or more repositories to find or store data
+
+Repositories:
+Its a class
+#1 place to put storage-related logic
+Usually ends up being a TypeORM entity, a Mongoose schema, or similar
+
+Our controller works with the service not the repository
+
+//// DI
+
+Inversion of Control Principle
+Classes should not create instance of its dependencies on its own
+
+Nest DI Container / Injector
+An object that:
+Lists classes and their dependencies
+List instances that have been created - which results in each dep being a singleton
+
+DI Container Flow
+
+At startup, register all classes with the container
+Container will figure out what each dependency each class has
+We then ask the container to create an instance of a class for us
+Container creates all required dependencies and gives us the instance
+Container will hold onto the created dependency instances and reuse them if needed
+
+We have to now:
+Use the 'Injectable' decorator on each class and add them to the modules list of providers ("Things that can be used as deps in other classes")
