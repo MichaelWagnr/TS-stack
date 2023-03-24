@@ -94,3 +94,14 @@ export class AppController {
 	}
 }
 ```
+
+=============================
+Section 3: Nest CLI
+=============================
+
+nest generate controller messages/messages --flat
+
+controller - Type of class to generate
+messages/ - Place the file in the messages folder
+messages - Call the class 'messages'
+--flat - Don't create an extra folder called 'controllers'
