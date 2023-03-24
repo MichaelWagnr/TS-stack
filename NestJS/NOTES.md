@@ -221,3 +221,19 @@ Container will hold onto the created dependency instances and reuse them if need
 
 We have to now:
 Use the 'Injectable' decorator on each class and add them to the modules list of providers ("Things that can be used as deps in other classes")
+
+=============================================
+Section 6: Organizing Code with Modules
+=============================================
+
+////Setting up DI between modules
+
+DI inside of a module
+Add the @Injectable decorator to PowerService
+Add the PowerService to the PowerModule's list of providers
+Define the constructor method on RegulatorService and add 'PowerService' to it.
+
+DI Between Modules (very similar to Angular)
+Add PowerService to the PowerModule's Decorator with exports:[]
+Import the PowerMOdule into the CpuModule with imports: []
+Define the constructor method on CpuService and add 'PowerService' to it
