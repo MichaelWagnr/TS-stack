@@ -237,3 +237,128 @@ DI Between Modules (very similar to Angular)
 Add PowerService to the PowerModule's Decorator with exports:[]
 Import the PowerMOdule into the CpuModule with imports: []
 Define the constructor method on CpuService and add 'PowerService' to it
+
+=============================================
+Section 7: Big Project Time!
+=============================================
+
+A good way to start a Nest Application is to identify the different resources in our project for which we will probably need a Controller, Service and Repository.
+
+Ex. In an app where Users report the value of their Car. We would have a:
+
+USERS MODULE
+Users Controller
+Users Service
+Users Repository
+
+REPORTS MODULE
+Reports Controller
+Reports Service
+Reports Repository
+
+=============================================
+Section 8: Persisting Data with TypeORM
+=============================================
+
+There are two ORMs that work well out of the box:
+
+TypeORM and Mongoose
+
+////
+
+An Entity is very similar to a Model
+Lists the different properties that an Entity has (no functionality)
+Nest and TypeORM then takes the Entity and creates a Repository for us
+We don't even see a generated file for them...
+
+```ts
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { UsersModule } from './users/users.module'
+import { ReportsModule } from './reports/reports.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+
+@Module({
+	imports: [
+		TypeOrmModule.forRoot({
+			type: 'sqlite',
+			database: 'db.sqlite',
+			entities: [],
+			synchronize: true,
+		}),
+		UsersModule,
+		ReportsModule,
+	],
+	controllers: [AppController],
+	providers: [AppService],
+})
+export class AppModule {}
+```
+
+First step is to import the TypeOrmModule into our AppModule
+
+////Creating an Entity
+
+Create an entity file, and create a class in it that lists all the properties that your entity will have
+
+```ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+
+@Entity()
+export class User {
+	@PrimaryGeneratedColumn()
+	id: number
+
+	@Column()
+	email: string
+
+	@Column()
+	password: string
+}
+```
+
+Connect the entity to its parent module. This creates a repository
+
+```ts
+import { Module } from '@nestjs/common'
+import { UsersController } from './users.controller'
+import { UsersService } from './users.service'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { User } from './users.entity'
+
+@Module({
+	imports: [TypeOrmModule.forFeature([User])],
+	controllers: [UsersController],
+	providers: [UsersService],
+})
+export class UsersModule {}
+```
+
+Connect the entity to the root connection (in app module)
+
+```ts
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { UsersModule } from './users/users.module'
+import { ReportsModule } from './reports/reports.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { User } from './users/users.entity'
+
+@Module({
+	imports: [
+		TypeOrmModule.forRoot({
+			type: 'sqlite',
+			database: 'db.sqlite',
+			entities: [User],
+			synchronize: true,
+		}),
+		UsersModule,
+		ReportsModule,
+	],
+	controllers: [AppController],
+	providers: [AppService],
+})
+export class AppModule {}
+```
