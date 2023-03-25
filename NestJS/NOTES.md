@@ -394,3 +394,49 @@ We use a Dto to validate the incoming request
 If the body is valid we send the request to the controller that handles routing
 Inside the service is our business logic
 We create an Entity and use a Repository to interface with the DB
+
+=============================================
+Section 10: Custom Data Serialization
+=============================================
+
+Interceptors can be used like middlewares
+
+```ts
+import {
+  UseInterceptors,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { plainToClass } from 'class-transformer';
+
+export class SerializeInterceptor implements NestInterceptor {
+  intercept(
+    context: ExecutionContext,
+    handler: CallHandler<any>,
+  ): Observable<any> {
+    // Run something before a request is handled by the request handler
+    console.log('Im running before the handler', context);
+
+    return handler.handle().pipe(
+      map((data: any) => {
+        // Run something before the response is sent out
+        console.log('Im running before response is sent out', data);
+      }),
+    );
+  }
+}
+
+IN CONTROLLER ON ROUTE WE WANT TO INTERCEPT
+  @UseInterceptors(SerializeInterceptor)
+  @Get('/:id')
+  async findUser(@Param('id') id: string) {
+    console.log('handler is running');
+
+    const user = await this.usersService.findOne(parseInt(id));
+    if (!user) throw new NotFoundException('user not found');
+    return user;
+  }
+```
