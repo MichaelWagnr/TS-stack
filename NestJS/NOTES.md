@@ -362,3 +362,35 @@ import { User } from './users/users.entity'
 })
 export class AppModule {}
 ```
+
+=============================================
+Section 9: Creating and Saving User Data
+=============================================
+
+Example of creating a TypeOrm repository in a service
+
+```ts
+import { Injectable } from '@nestjs/common'
+import { Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { User } from './users.entity'
+
+@Injectable()
+export class UsersService {
+	constructor(@InjectRepository(User) private repo: Repository<User>) {}
+
+	create(email: string, password: string) {
+		const user = this.repo.create({ email, password })
+		return this.repo.save(user)
+	}
+}
+```
+
+Flow:
+
+Our app receives a Request
+We set up ValidationPipe in the main.ts file
+We use a Dto to validate the incoming request
+If the body is valid we send the request to the controller that handles routing
+Inside the service is our business logic
+We create an Entity and use a Repository to interface with the DB
