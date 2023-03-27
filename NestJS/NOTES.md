@@ -440,3 +440,7 @@ IN CONTROLLER ON ROUTE WE WANT TO INTERCEPT
     return user;
   }
 ```
+
+=============================================
+Section 11: Authentication From Scratch
+=============================================
