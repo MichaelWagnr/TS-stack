@@ -592,3 +592,13 @@ export class ReportDto {
 	userId: number
 }
 ```
+
+=============================================
+Section 16: A Basic Permissions System
+=============================================
+
+Authorization: Figue out if the person making the request is allowed to make it
+
+Authentication: Figure out who is making a request
+
+Interceptors run after Middle Ware and Guards so we can't write Guards or MidWare that relies on Interceptors, instead we should make them middle ware
