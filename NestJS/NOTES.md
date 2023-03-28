@@ -545,3 +545,50 @@ export class AppModule {
 =============================================
 Section 14: Managing App Configuration
 =============================================
+
+=============================================
+Section 15: Relations with TypeORM
+=============================================
+
+Building Associations with Nest and TypeORM
+
+Figure out what kind of association we are modeling
+Add the appropriate decorators to our related entities
+Associate the records when one is created
+Apply a serializer to limit info shared
+
+In our app: A User has many Reports, A Report has one User
+
+```ts
+import { Expose, Transform } from 'class-transformer'
+
+export class ReportDto {
+	@Expose()
+	id: number
+
+	@Expose()
+	make: string
+
+	@Expose()
+	model: string
+
+	@Expose()
+	year: number
+
+	@Expose()
+	lng: number
+
+	@Expose()
+	lat: number
+
+	@Expose()
+	mileage: number
+
+	@Expose()
+	price: number
+
+	@Transform(({ obj }) => obj.user.id)
+	@Expose()
+	userId: number
+}
+```
