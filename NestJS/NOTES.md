@@ -496,3 +496,48 @@ And change it to:
 "test:watch": "jest --watch --maxWorkers=1",
 
 Restart your test runner at your terminal after making this change
+
+=============================================
+Section 13: Integration Testing
+=============================================
+
+Test it('handles a request to signup') =Test Runner>
+Create new copy of the entire nest app
+Listen on traffic to a randomly assigned port
+Receive requests from the test
+
+```ts
+@Module({
+	imports: [
+		TypeOrmModule.forRoot({
+			type: 'sqlite',
+			database: 'db.sqlite',
+			entities: [User, Report],
+			synchronize: true,
+		}),
+		UsersModule,
+		ReportsModule,
+	],
+	controllers: [AppController],
+	providers: [
+		AppService,
+		{
+			provide: APP_PIPE,
+			useValue: new ValidationPipe({
+				whitelist: true,
+			}),
+		},
+	],
+})
+export class AppModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer
+			.apply(
+				cookieSession({
+					keys: ['asdfasdf'],
+				})
+			)
+			.forRoutes('*')
+	}
+}
+```
