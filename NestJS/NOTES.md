@@ -633,3 +633,13 @@ createQueryBuilder - Returns a query builder that can be used for complex querie
 	```
 
 ````
+
+=============================================
+Section 18: Production Deployment
+=============================================
+
+Theory of migrations
+
+We have a file with an up() and down() function that changes the structure of our db and has a function that perfectly undoes the change of the structure.
+
+Quite a few videos regarding the TypeORM CLI and Heroku that do not entirely relate to target tech stack/tooling
