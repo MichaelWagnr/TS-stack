@@ -602,3 +602,34 @@ Authorization: Figue out if the person making the request is allowed to make it
 Authentication: Figure out who is making a request
 
 Interceptors run after Middle Ware and Guards so we can't write Guards or MidWare that relies on Interceptors, instead we should make them middle ware
+
+=============================================
+Section 17: Query Builders with TypeORM
+=============================================
+
+TypeORM Repository methods:
+
+create, save, find, findOne AND
+createQueryBuilder - Returns a query builder that can be used for complex queries
+
+````ts
+
+	  createEstimate({ make, model, lng, lat, year, mileage }: GetEstimateDto) {
+    return this.repo
+				// THE VALUE OF :MAKE COMES FROM THE 2nd ARG
+			// THIS PREVENTS SQL INJECTION ATTACKS
+      .createQueryBuilder()
+      .select('AVG(price', 'price')
+      .where('make = :make', { make })
+      .andWhere('model = :model', { model })
+      .andWhere('lng = :lng BETWEEN -5 AND 5', { lng })
+      .andWhere('lat = :lat BETWEEN -5 AND 5', { lat })
+      .andWhere('year = :year BETWEEN -3 AND 3', { year })
+      .orderBy('ABS(mileage - :mileage)', 'DESC')
+      .setParameters({ mileage })
+      .limit(3)
+      .getRawOne();
+  }
+	```
+
+````
